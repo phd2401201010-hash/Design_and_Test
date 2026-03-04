@@ -1,0 +1,171 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_ARITH.ALL;
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
+
+entity Mesa_Trojan is
+Port (V0,V1_1,V2_1,V3_1,V3_2,V2_2:in std_logic_vector(15 downto 0);-- (Primary input of Four Registers R G B Y)
+      BM_S1,BD_S2,YM_S1,YD_S2,GM_S1,GD_S2:in std_logic_vector(1 downto 0); --(Select input for 2x1 mux demux of REG_B,Y,G)
+		BDT_S1,BDT_S2: std_logic_vector(1 downto 0); --(Trojan Signal for Blue And Yellow 2:1 mux, 1:2 demux)
+		YMT_S2,YDT_S2: std_logic_vector(2 downto 0); --(Trojan Signal for Yellow 8:1 mux, 1:8 demux)
+      BMT_S1,BMT_S2,YMT_S1,YDT_S1,M1_S1,M1_S2,M1_S3,M2_S1,M2_S2,M2_S3,M3_S1,M3_S2,M4_S1,M4_S2,M2T_S1,A3T_S1,M3T_S1: in std_logic;
+     --Select input for 2x1 mux and demux of Registers and MUL (1,2,3 and 4)
+		RM_S1,RD_S2: in std_logic_vector(2 downto 0); -- Free Output of R register and Adder
+		O1_S30,O2_S30:out std_logic_vector(15 downto 0)); -- Final Output
+end Mesa_Trojan;
+
+architecture structural of Mesa_Trojan is
+
+component mux_2to1 is
+port(A2,B2: in std_logic_vector(15 downto 0);
+	    MS2: in std_logic;
+	    MZ2: out std_logic_vector(15 downto 0));
+end component;
+
+component mux_4to1 is
+port(A4,B4,C4,D4:in std_logic_vector(15 downto 0);
+	  MS4: in std_logic_vector(1 downto 0);
+	  MZ4: out std_logic_vector(15 downto 0));
+end component;
+
+component mux_8to1 is
+port (MS8: in std_logic_vector (2 downto 0); 
+      A8,B8,C8,D8,E8,F8,G8,H8: in std_logic_vector (15 downto 0);
+      MZ8: out std_logic_vector(15 downto 0));
+end component;
+
+component adder is
+port(aA: in std_logic_vector(15 downto 0);
+     aB: in std_logic_vector(15 downto 0);
+	  aZ: out std_logic_vector(15 downto 0));
+end component;
+
+component mul is
+port(mA: in std_logic_vector(15 downto 0);
+     mB: in std_logic_vector(15 downto 0);
+     mZ: out std_logic_vector(15 downto 0));
+end component;
+
+component demux_1to2 is
+port(Z: in std_logic_vector(15 downto 0);
+	    S: in std_logic;
+      A,B: out std_logic_vector(15 downto 0));
+end component;
+
+component demux_1to4 is
+port(DZ4: in std_logic_vector(15 downto 0);
+     DS4: in std_logic_vector(1 downto 0);
+     P4,Q4,R4,T4:out std_logic_vector(15 downto 0));
+end component; 
+
+component demux_1to8 is
+port(DZ8:in std_logic_vector(15 downto 0);
+     DS8: in std_logic_vector (2 downto 0); 
+     P0,P1,P2,P3,P41,P5,P6,P7: out std_logic_vector(15 downto 0));
+end component;
+
+component latch1 is
+port(L1: in std_logic_vector(15 downto 0);
+   LEN1: in std_logic;
+    LZ1: out std_logic_vector(15 downto 0));	  
+end component;
+
+component reg is
+port(rD: in std_logic_vector(15 downto 0);
+     ren: in std_logic;
+	  rZ: out std_logic_vector(15 downto 0));
+end component;
+
+
+SIGNAL S1,S2,S3,S4,S5,S6,S7,S8,S9,S10,S11,S12,S13,S14,S15,S16,S17,S18,S19,S20,S21,S22,S23,S24,S25,S26,S27,S28,S29,S30,
+S31,S32,S33,S34,S35,S36,S37,S38,S39,S40,S41,S42,S43,S44,S45,S46,S47,S48,S49,S50,S51,S52,S53,S54,S55,S56,S57,S58,S59,S60,S61,S62,S63,S64,S65,S66,S67,S68,S69,S70,S71,S72,S73,S74,S75,S76,S77,S78,S79,S80,S81,S82:std_logic_vector(15 downto 0);
+SIGNAL S3_1,S3_2,S3_3,S4_1,S4_2,S4_3,S5_1,S6_1,S7_1,S8_1,S9_1,S10_1,S11_1,S11_2,S12_1,S12_2,S12_3,S12_4,S12_5,S13_1,S14_1,S15_1,S16_1,S17_1,S18_1,S19_1,S20_1,S21_1,S22_1,S22_2,S23_1,S24_1,S25_1,S26_1: std_logic_vector(15 downto 0);
+SIGNAL S_1,S_2,S_3,S_4,S_5,S_51,S_6,S_7,S_8: std_logic_vector(15 downto 0); --Free input ports of G register and Adder 
+SIGNAL GR_1,PR_1,MR_1,CR_1,TR_1,OR_1,BR_1,YR_1,L_1,L_2,L_3,L_4,L_5,L_6,L_7,L_8,L_9,L_10,L_11,L_12,L_13,L_14,L_15,L_16,L_17,L_18,L_19,L_20:std_logic; 
+ 
+begin
+---------------------------------------RAT-HT TROJAN Code-------------
+T1:mux_2to1 PORT MAP(A2=>V2_1,B2=>S8_1,MS2=>BMT_S1,MZ2=>S3_1);	
+T2:mux_2to1 PORT MAP(A2=>S3,B2=>S3_1,MS2=>BMT_S2,MZ2=>S3_3);
+T3:demux_1to2 PORT MAP(Z=>S4_1,S=>M1_S3,A=>S4_2,B=>S4_3);
+T4:demux_1to2 PORT MAP(Z=>S4,S=>M1_S3,A=>S5_1,B=>S14_1);
+T5:mux_8to1 PORT MAP(A8=>V3_2,B8=>S6_1,C8=>S7_1,D8=>S8_1,E8=>S9_1,F8=>S10_1,G8=>S11_1,H8=>S_51,MS8=>YMT_S2,MZ8=>S12_1);	
+T6:mux_2to1 PORT MAP(A2=>S11,B2=>S12_1,MS2=>YMT_S1,MZ2=>S11_2);
+T7:demux_1to2 PORT MAP(Z=>S12_2,S=>YDT_S1,A=>S12_3,B=>S12_4);
+T8:demux_1to8 PORT MAP(DZ8=>S23,DS8=>YDT_S2,P0=>S13_1,P1=>S14_1,P2=>S15_1,P3=>S16_1,P41=>S17_1,P5=>S18_1,P6=>O2_S30,P7=>S_6);
+T9:mux_2to1 PORT MAP(A2=>S19_1,B2=>S20_1,MS2=>M2T_S1,MZ2=>S12_5);
+T10:mux_2to1 PORT MAP(A2=>S21_1,B2=>S22_2,MS2=>A3T_S1,MZ2=>S23_1);
+T11:mux_2to1 PORT MAP(A2=>S24_1,B2=>S25_1,MS2=>M3T_S1,MZ2=>S26_1);
+----------------------------------------REG_Blue----------------------
+V1:mux_4to1 PORT MAP(A4=>V2_1,B4=>S1,C4=>S2,D4=>S_1,MS4=>BM_S1,MZ4=>S3);
+V2:reg PORT MAP(rD=>S3_3,ren=>GR_1,rZ=>S4_1);
+V3:demux_1to4 PORT MAP(DZ4=>S4_2,DS4=>BD_S2,P4=>S5,Q4=>S6,R4=>S7,T4=>S_2);	
+----------------------------------------REG _Yellow-------------------------
+V4:mux_4to1 PORT MAP(A4=>V3_1,B4=>S8,C4=>S9,D4=>S10,MS4=>YM_S1,MZ4=>S11);
+V5:reg PORT MAP(rD=>S11,ren=>GR_1,rZ=>S12);
+V6:demux_1to4 PORT MAP(DZ4=>S12,DS4=>YD_S2,P4=>S13,Q4=>S14,R4=>S15,T4=>S_4);
+----------------------------------------REG_RED-----------------------------
+V7:mux_8to1 PORT MAP(A8=>V0,B8=>S16,C8=>S7,D8=>S18,E8=>S19,F8=>S20,G8=>S21,H8=>S_5,MS8=>RM_S1,MZ8=>S22);	
+V8:reg PORT MAP(rD=>S22,ren=>MR_1,rZ=>S23);
+V9:demux_1to8 PORT MAP(DZ8=>S23,DS8=>RD_S2,P0=>S24,P1=>S25,P2=>S26,P3=>S27,P41=>S28,P5=>S29,P6=>O1_S30,P7=>S_6);
+----------------------------------------REG_Green-------------------------------------------------------------
+V10:mux_4to1 PORT MAP(A4=>V1_1,B4=>S31,C4=>S32,D4=>S33,MS4=>GM_S1,MZ4=>S34);
+V11:reg PORT MAP(rD=>S34,ren=>BR_1,rZ=>S35);
+V12:demux_1to4 PORT MAP(DZ4=>S40,DS4=>GD_S2,P4=>S36,Q4=>S37,R4=>S38,T4=>S39);
+----------------------------------------Mul(M1)----------------------------
+V13:mux_2to1 PORT MAP(A2=>S24,B2=>S26,MS2=>M1_S1,MZ2=>S41);	
+V14:latch1 PORT MAP(L1=>S41,LEN1=>L_1,LZ1=>S42);
+V15:mux_2to1 PORT MAP(A2=>S24,B2=>S26,MS2=>M1_S2,MZ2=>S43);
+V16:latch1 PORT MAP(L1=>S43,LEN1=>L_2,LZ1=>S44);
+V17:mul PORT MAP(mA=>S42,mB=>S44,mZ=>S45);	
+V18:latch1 PORT MAP(L1=>S45,LEN1=>L_3,LZ1=>S46); 
+V19:demux_1to2 PORT MAP(Z=>S46,S=>M1_S3,A=>S16,B=>S18);	
+----------------------------------------Mul(M2)------------
+V20:mux_2to1 PORT MAP(A2=>S37,B2=>S39,MS2=>M2_S1,MZ2=>S65);	
+V21:latch1 PORT MAP(L1=>S65,LEN1=>L_4,LZ1=>S66); 
+V22:mux_2to1 PORT MAP(A2=>S37,B2=>S14,MS2=>M2_S2,MZ2=>S67);
+V23:latch1 PORT MAP(L1=>S67,LEN1=>L_5,LZ1=>S68); 
+V24:mul PORT MAP(mA=>S66,mB=>S68,mZ=>S69);	
+V25:latch1 PORT MAP(L1=>S69,LEN1=>L_6,LZ1=>S70); 
+V26:demux_1to2 PORT MAP(Z=>S70,S=>M2_S2,A=>S31,B=>S33);	
+----------------------------------------Mul(M3)------------
+V27:mux_2to1 PORT MAP(A2=>S5,B2=>S7,MS2=>M2_S1,MZ2=>S59);	
+V28:latch1 PORT MAP(L1=>S59,LEN1=>L_7,LZ1=>S60); 
+V29:mux_2to1 PORT MAP(A2=>S5,B2=>S7,MS2=>M2_S2,MZ2=>S61);
+V30:latch1 PORT MAP(L1=>S61,LEN1=>L_8,LZ1=>S62); 
+V31:mul PORT MAP(mA=>S66,mB=>S68,mZ=>S69);	
+V32:latch1 PORT MAP(L1=>S69,LEN1=>L_9,LZ1=>S70); 
+V33:demux_1to2 PORT MAP(Z=>S64,S=>M3_S2,A=>S8,B=>S9);	
+----------------------------------------Mul(M4)------------
+V34:mux_2to1 PORT MAP(A2=>S13,B2=>S28,MS2=>M4_S1,MZ2=>S71);	
+V35:latch1 PORT MAP(L1=>S71,LEN1=>L_10,LZ1=>S73); 
+V36:mux_2to1 PORT MAP(A2=>S13,B2=>S28,MS2=>M2_S2,MZ2=>S72);
+V37:latch1 PORT MAP(L1=>S72,LEN1=>L_11,LZ1=>S74); 
+V38:mul PORT MAP(mA=>S73,mB=>S74,mZ=>S75);	
+V39:latch1 PORT MAP(L1=>S75,LEN1=>L_12,LZ1=>S76); 
+V40:demux_1to2 PORT MAP(Z=>S76,S=>M4_S2,A=>S1,B=>S20);	
+----------------------------------------Adder(A1)------------
+V41:mux_2to1 PORT MAP(A2=>S25,B2=>S27,MS2=>M2_S1,MZ2=>S47);	
+V42:latch1 PORT MAP(L1=>S47,LEN1=>L_13,LZ1=>S49); 
+V43:mux_2to1 PORT MAP(A2=>S25,B2=>S27,MS2=>M2_S2,MZ2=>S48);
+V44:latch1 PORT MAP(L1=>S48,LEN1=>L_14,LZ1=>S50); 
+V45:adder PORT MAP(aA=>S49,aB=>S50,aZ=>S51);	
+V46:latch1 PORT MAP(L1=>S51,LEN1=>L_15,LZ1=>S52); 
+V47:demux_1to2 PORT MAP(Z=>S52,S=>M2_S3,A=>S17,B=>S19);	
+----------------------------------------Adder(A2)------------
+V48:mux_2to1 PORT MAP(A2=>S38,B2=>S15,MS2=>M2_S1,MZ2=>S77);	
+V49:latch1 PORT MAP(L1=>S77,LEN1=>L_16,LZ1=>S78); 
+V50:mux_2to1 PORT MAP(A2=>S38,B2=>S15,MS2=>M2_S2,MZ2=>S79);
+V51:latch1 PORT MAP(L1=>S79,LEN1=>L_17,LZ1=>S80); 
+V52:adder PORT MAP(aA=>S78,aB=>S80,aZ=>S81);		
+V53:latch1 PORT MAP(L1=>S81,LEN1=>L_17,LZ1=>S82); 
+V54:demux_1to2 PORT MAP(Z=>S82,S=>M2_S3,A=>S32,B=>S10);	
+----------------------------------------Adder(A3)------------
+V55:mux_2to1 PORT MAP(A2=>S56,B2=>S29,MS2=>M2_S1,MZ2=>S53);	
+V56:latch1 PORT MAP(L1=>S53,LEN1=>L_18,LZ1=>S54); 
+V57:mux_2to1 PORT MAP(A2=>S56,B2=>S40,MS2=>M2_S2,MZ2=>S55);
+V58:latch1 PORT MAP(L1=>S55,LEN1=>L_19,LZ1=>S56); 
+V59:adder PORT MAP(aA=>S55,aB=>S56,aZ=>S58);	
+V60:latch1 PORT MAP(L1=>S58,LEN1=>L_20,LZ1=>S59); 
+V61:demux_1to2 PORT MAP(Z=>S58,S=>M2_S3,A=>S2,B=>S21);	
+end structural;

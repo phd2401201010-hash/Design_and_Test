@@ -1,0 +1,23 @@
+library ieee;
+use ieee.std_logic_1164.all;
+entity mux_4to1 is
+port(A4,B4,C4,D4:in std_logic_vector(15 downto 0);
+MS4: in std_logic_vector(1 downto 0);
+MZ4:out std_logic_vector(15 downto 0));
+end mux_4to1;
+
+architecture bhv of mux_4to1 is
+begin
+process(A4,B4,C4,D4,MS4) is
+begin
+if(MS4="00")then
+MZ4<=D4;
+elsif(MS4="01")then
+MZ4<=C4;
+elsif(MS4="10")then
+MZ4<=B4;
+else
+MZ4<=A4;
+end if;
+end process;
+end bhv;

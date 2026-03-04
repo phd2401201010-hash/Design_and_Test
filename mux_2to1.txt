@@ -1,0 +1,18 @@
+library ieee;
+use ieee.std_logic_1164.all;
+entity mux_2to1 is
+port(A2,B2: in std_logic_vector(15 downto 0);
+MS2: in std_logic;
+MZ2:out std_logic_vector(15 downto 0));
+end mux_2to1;
+architecture bhv of mux_2to1 is
+begin
+process(A2,B2,MS2)is
+begin
+if(MS2='0')then
+MZ2<=B2;
+else
+MZ2<=A2;
+end if;
+end process;
+end bhv;

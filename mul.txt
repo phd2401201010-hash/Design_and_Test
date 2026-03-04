@@ -1,0 +1,25 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_arith.all;
+use ieee.std_logic_unsigned.all;
+entity mul is
+port(mA:in std_logic_vector(15 downto 0);
+     mB:in std_logic_vector(15 downto 0);
+	  mZ: out std_logic_vector(15 downto 0)
+);
+
+end mul;
+architecture bhv of mul is
+--temporary signal declaration.
+signal Reg1,Reg2: std_logic_vector(15 downto 0) := (others => '0');
+signal Reg_x : std_logic_vector(31 downto 0);      
+
+begin
+Reg1 <= mA;
+Reg2 <= mB;
+process(mA,mB)is
+begin
+Reg_x <= Reg1 * Reg2;  --Multiplication
+mZ<= Reg_x(15 downto 0);
+end process;
+end bhv;

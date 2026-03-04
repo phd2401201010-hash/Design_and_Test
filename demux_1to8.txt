@@ -1,0 +1,22 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_arith.all;
+use ieee.std_logic_unsigned.all;
+
+entity demux_1to8 is
+port(DZ8:in std_logic_vector(15 downto 0);
+     DS8: in std_logic_vector (2 downto 0); 
+     P0,P1,P2,P3,P41,P5,P6,P7: out std_logic_vector(15 downto 0)
+);
+end demux_1to8;
+architecture bhv of demux_1to8 is
+begin
+	P0<=DZ8 when DS8="000" else "0000000000000000";
+	P1<=DZ8 when DS8="001" else "0000000000000000";
+	P2<=DZ8 when DS8="010" else "0000000000000000";
+	P3<=DZ8 when DS8="011" else "0000000000000000";
+	P41<=DZ8 when DS8="100" else "0000000000000000";
+	P5<=DZ8 when DS8="101" else "0000000000000000";
+	P6<=DZ8 when DS8="110" else "0000000000000000";
+	P7<=DZ8 when DS8="111" else "0000000000000000";
+end bhv;
