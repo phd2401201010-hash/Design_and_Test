@@ -1,5 +1,5 @@
 The in-house HLS Tool is designed in a modular fashion, currently implemented as independent modules (the integration of the modules is currently a work in progress). The tool has two major modules: 
-(a) HLS Front End: This is performed using our HLS HLT Tool which converts a raw DFG into a processed (transformed) DFG using a set of structural transformation algorithms (adopted from the following works):
+(a) HLS Front End: This is performed using our HLS HLT Tool which converts a raw DFG into a processed (transformed) DFG using a set of structural transformation algorithms such as THT, LU, LICM, ROE etc. (adopted from the following works):
 
 -- A. Sengupta, D. Roy "Protecting an Intellectual Property Core during Architectural Synthesis using High-Level Transformation Based Obfuscation" IET Electronics Letters, Volume: 53, Issue: 13, June 2017, pp. 849 - 851.    
 -- A. Sengupta, V. Kumar Mishra, "Swarm Intelligence Driven Simultaneous Adaptive Exploration of Datapath and Loop Unrolling Factor during Area-Performance Tradeoff ", Proceedings of 13th IEEE Computer Society Annual International Symposium on VLSI (ISVLSI), Florida, USA, July 2014, pp. 106 112 (DOUBLE BLIND REVIEW).
