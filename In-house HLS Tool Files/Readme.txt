@@ -20,7 +20,8 @@ Note: The jdk can be downloaded and installed from the following: https://javadl
 
 (c) HLS Back End: This module is responsible for accepting the processed DFG from HLS HLT tool and explored architecture from PSO-DSE tool for performing scheduling, resource allocation, binding, register allocation and datapath generation etc. This is implemented using our HLS register allocation engine module (source code provided). These steps of HLS are performed using the algorithms described in the following works:
 
--- A. Sengupta, S. P. Mohanty "High-Level Synthesis of Digital Circuits in the Nanoscale, Mobile Electronics Era", IET Book: Nano-CMOS and Post-CMOS Electronics: Circuits and Design, Book Chapter, e-ISBN: 9781785610004, pp: 219 - 261. Available at: https://doi.org/10.1049/PBCS030E_ch8.          
+-- A. Sengupta, S. P. Mohanty "High-Level Synthesis of Digital Circuits in the Nanoscale, Mobile Electronics Era", IET Book: Nano-CMOS and Post-CMOS Electronics: Circuits and Design, Book Chapter, e-ISBN: 9781785610004, pp: 219 - 261. Available at: https://doi.org/10.1049/PBCS030E_ch8.    
+
  
 -- A. Sengupta et al., "A High Level Synthesis design flow with a novel approach for Efficient Design Space Exploration in case of multi parametric optimization objective", Elsevier Microelectronics Reliability, Vol. 50 (3), 2010, pp. 424-437.
 
