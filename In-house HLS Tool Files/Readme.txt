@@ -1,6 +1,6 @@
 The HLS Benchmarks in the form of high level description (transfer function) and it associated intermediate representation (IR) as CDFG/DFG is provided in the "HLS Benchmarks.pdf", also publicly available in: 
 https://www.anirban-sengupta.com/HLS%20Benchmarks%20Details.pdf
-
+The relevant research paper citations, where the high level description (transfer function) and it associated intermediate representation (IR) as CDFG/DFG is described, is also present in the PDF file.
 **************************************************************************
 **HLS Framework/Tool**
 **************************************************************************
