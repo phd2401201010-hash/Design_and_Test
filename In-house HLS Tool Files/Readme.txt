@@ -15,7 +15,7 @@ The in-house HLS Tool is designed in a modular fashion, implemented as three mod
 -- A. Sengupta, V. Kumar Mishra, "Swarm Intelligence Driven Simultaneous Adaptive Exploration of Datapath and Loop Unrolling Factor during Area-Performance Tradeoff ", Proceedings of 13th IEEE Computer Society Annual International Symposium on VLSI (ISVLSI), Florida, USA, July 2014, pp. 106 112 (DOUBLE BLIND REVIEW).
 -- A. Sengupta, D. Roy, S. Mohanty, Peter Corcoran "DSP Design Protection in CE through Algorithmic Transformation Based Structural Obfuscation", IEEE Transactions on Consumer Electronics, Volume 63, Issue 4, November 2017, pp: 467 - 476. 
 
-Note: The jdk can be downloaded and installed from the following: https://javadl.oracle.com/webapps/download/AutoDL?BundleId=253194_f7fe8e644f724108bdb54139381e29a7
+Note: The jdk 17 can be downloaded and installed from the following: https://adoptium.net/temurin/releases?&version=17&os=any&arch=any
 
 
 (c) HLS Back End: This module is responsible for accepting the processed DFG from HLS HLT tool and explored architecture from PSO-DSE tool for performing scheduling, resource allocation, binding, register allocation and datapath generation etc. This is implemented using our HLS register allocation engine module (source code provided). These steps of HLS are performed using the algorithms described in the following works:
