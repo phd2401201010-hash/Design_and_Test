@@ -6,7 +6,7 @@ The relevant research paper citations, where the high level description (transfe
 **************************************************************************
 The in-house HLS Tool is designed in a modular fashion, implemented as three modules (currently independent modules but the integration of the modules is a work in progress for our in-house HLS tool). Subsequently this will be publicly relased. The three major modules are: 
 
-(a) HLS Front End: This is performed using our HLS HLT Tool. The Tool requires java development kit (jdk) installed for executing the HLS HLT tool. The HLS HLT Tool converts a raw DFG into a processed/transformed DFG (i.e. intermediate representation (IR)) using a set of structural compiler transformation techniques such as THT, LU, LICM, ROE etc (adopted from the references below). 
+(a) HLS Front End: This is performed using our HLS HLT Tool. The Tool requires java development kit (jdk) installed for executing the HLS HLT tool. The HLS HLT Tool converts a raw DFG into a processed/transformed DFG (i.e. intermediate representation (IR)) using a set of structural compiler transformation techniques such as THT, LU, and ROE (adopted from the references below). The tutorial for HLS HLT Tool is provided inside the 'HLS_HLT_IR' folder as a PDF file named 'Tutorial_HLS_HLT_Tool.pdf'.
 
 
 (b) HLS Middle End: This is performed using our PSO-DSE tool that exploits particle swarm optimization (PSO) based design space exploration process for exploring optimized hardware IP design architecture based on area/power-delay tradeoff. The Tool requires java development kit (jdk) installed for executing the tool.
